@@ -1,54 +1,50 @@
 package com.nucleo1Ejercicio.gestionAcademica.controller;
+
 import com.nucleo1Ejercicio.gestionAcademica.model.Classroom;
 import com.nucleo1Ejercicio.gestionAcademica.service.ClassroomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/classrooms")
+@Controller
+@RequestMapping("/classrooms")
 public class ClassroomController {
 
     @Autowired
     private ClassroomService classroomService;
 
     @GetMapping
-    public List<Classroom> getAllClassrooms() {
-        return classroomService.getAllClassrooms();
+    public String listClassrooms(Model model) {
+        List<Classroom> classrooms = classroomService.getAllClassrooms();
+        model.addAttribute("classrooms", classrooms);
+        model.addAttribute("classroom", new Classroom());
+        return "classrooms";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Classroom> getClassroomById(@PathVariable Long id) {
+    @GetMapping("/edit/{id}")
+    public String editClassroom(@PathVariable("id") Long id, Model model) {
         Classroom classroom = classroomService.getClassroomById(id);
-        if (classroom != null) {
-            return new ResponseEntity<>(classroom, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        model.addAttribute("classroom", classroom != null ? classroom : new Classroom());
+        model.addAttribute("classrooms", classroomService.getAllClassrooms());
+        return "classrooms";
     }
 
     @PostMapping
-    public ResponseEntity<Classroom> createClassroom(@RequestBody Classroom classroom) {
-        Classroom newClassroom = classroomService.createClassroom(classroom);
-        return new ResponseEntity<>(newClassroom, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Classroom> updateClassroom(@PathVariable Long id, @RequestBody Classroom classroom) {
-        Classroom updatedClassroom = classroomService.updateClassroom(id, classroom);
-        if (updatedClassroom != null) {
-            return new ResponseEntity<>(updatedClassroom, HttpStatus.OK);
+    public String saveClassroom(@ModelAttribute("classroom") Classroom classroom) {
+        if (classroom.getClassroomId() != null) {
+            classroomService.updateClassroom(classroom.getClassroomId(), classroom);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            classroomService.createClassroom(classroom);
         }
+        return "redirect:/classrooms";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClassroom(@PathVariable Long id) {
+    @GetMapping("/delete/{id}")
+    public String deleteClassroom(@PathVariable("id") Long id) {
         classroomService.deleteClassroom(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return "redirect:/classrooms";
     }
 }

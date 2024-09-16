@@ -1,10 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Gestión de Aulas</title>
 </head>
 <body>
+<div th:replace="~{main :: body(content=~{::#classroomContent})}">
+    <div id="classroomContent">
+        <h2>Gestión de Aulas</h2>
 
+        <form th:action="@{/classrooms}" th:object="${classroom}" method="post" class="mb-4">
+            <input type="hidden" th:field="*{classroomId}" />
+            <div class="mb-3">
+                <label for="roomNumber" class="form-label">Número del Aula:</label>
+                <input type="text" class="form-control" id="roomNumber" th:field="*{roomNumber}" required>
+            </div>
+            <div class="mb-3">
+                <label for="capacity" class="form-label">Capacidad:</label>
+                <input type="number" class="form-control" id="capacity" th:field="*{capacity}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+
+        <h3>Lista de Aulas</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Número de Aula</th>
+                <th>Capacidad</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="classroom : ${classrooms}">
+                <td th:text="${classroom.classroomId}"></td>
+                <td th:text="${classroom.roomNumber}"></td>
+                <td th:text="${classroom.capacity}"></td>
+                <td>
+                    <a th:href="@{/classrooms/edit/{id}(id=${classroom.classroomId})}" class="btn btn-warning btn-sm">Editar</a>
+                    <a th:href="@{/classrooms/delete/{id}(id=${classroom.classroomId})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar esta aula?')">Eliminar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>

@@ -1,10 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Gestión de Tutores</title>
 </head>
 <body>
+<div th:replace="~{main :: body(content=~{::#teacherContent})}">
+    <div id="teacherContent">
+        <h2>Gestión de Tutores</h2>
 
+        <form th:action="@{/teachers}" th:object="${teacher}" method="post">
+            <input type="hidden" th:field="*{teacherId}" />
+            <div class="mb-3">
+                <label for="firstName" class="form-label">Nombre:</label>
+                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required>
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Apellido:</label>
+                <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control" id="email" th:field="*{email}" required>
+            </div>
+            <div class="mb-3">
+                <label for="specialization" class="form-label">Especialización:</label>
+                <input type="text" class="form-control" id="specialization" th:field="*{specialization}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+
+        <h3 class="mt-4">Lista de Tutores</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Email</th>
+                <th>Especialización</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="teacher : ${teachers}">
+                <td th:text="${teacher.teacherId}"></td>
+                <td th:text="${teacher.firstName}"></td>
+                <td th:text="${teacher.lastName}"></td>
+                <td th:text="${teacher.email}"></td>
+                <td th:text="${teacher.specialization}"></td>
+                <td>
+                    <a th:href="@{/teachers/edit/{id}(id=${teacher.teacherId})}" class="btn btn-warning btn-sm">Editar</a>
+                    <a th:href="@{/teachers/delete/{id}(id=${teacher.teacherId})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar este tutor?')">Eliminar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>

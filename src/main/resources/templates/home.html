@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inicio - Sistema de Gestión Académica</title>
+</head>
+<body>
+<div th:replace="~{main :: body(content=~{::#homeContent})}">
+    <div id="homeContent" class="text-center">
+        <h1 class="mt-5" th:text="${welcomeMessage}">Bienvenido</h1>
+        <p class="lead">Selecciona una opción del menú para comenzar.</p>
+        <i class="bi bi-mortarboard-fill" style="font-size: 5rem; color: #007bff;"></i>
+    </div>
+</div>
+</body>
+</html>

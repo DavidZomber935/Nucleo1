@@ -1,10 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Gestión de Cursos</title>
 </head>
 <body>
+<div th:replace="~{main :: body(content=~{::#courseContent})}">
+    <div id="courseContent">
+        <h2>Gestión de Cursos</h2>
 
+        <form th:action="@{/courses}" th:object="${course}" method="post">
+            <input type="hidden" th:field="*{courseId}" />
+            <div class="mb-3">
+                <label for="courseName" class="form-label">Nombre del Curso:</label>
+                <input type="text" class="form-control" id="courseName" th:field="*{courseName}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Descripción:</label>
+                <textarea class="form-control" id="description" th:field="*{description}" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="credits" class="form-label">Créditos:</label>
+                <input type="number" class="form-control" id="credits" th:field="*{credits}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+
+        <h3 class="mt-4">Lista de Cursos</h3>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre del Curso</th>
+                <th>Descripción</th>
+                <th>Créditos</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="course : ${courses}">
+                <td th:text="${course.courseId}"></td>
+                <td th:text="${course.courseName}"></td>
+                <td th:text="${course.description}"></td>
+                <td th:text="${course.credits}"></td>
+                <td>
+                    <a th:href="@{/courses/edit/{id}(id=${course.courseId})}" class="btn btn-warning btn-sm">Editar</a>
+                    <a th:href="@{/courses/delete/{id}(id=${course.courseId})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que quieres eliminar este curso?')">Eliminar</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>
